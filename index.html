@@ -2,17 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
-
-  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
-  <link rel="stylesheet" href="styles.css">
-  <title>Frontend Mentor | Newsletter sign-up form with success message</title>
-
-  <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
-  <style>
-    .attribution { font-size: 11px; text-align: center; }
-    .attribution a { color: hsl(228, 45%, 44%); }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="./css/styles.css">
+  
+  <title>Newsletter Sign-up Form with Success Message</title>
 </head>
 <body>
   
@@ -21,38 +19,46 @@
       <h1>Stay updated!</h1>
       <p>Join 60,000+ product managers receiving monthly updates on:</p>
       <ul class="icons">
-        <li><img src="icon-list.svg" alt="">Product discovery and building what matters</li>
-        <li><img src="icon-list.svg" alt="">Measuring to ensure updates are a success</li>
-        <li><img src="icon-list.svg" alt="">And much more!</li>
+        <li><img src="./images/icon-list.svg" alt="Checkmark icon">Product discovery and building what matters</li>
+        <li><img src="./images/icon-list.svg" alt="Checkmark icon">Measuring to ensure updates are a success</li>
+        <li><img src="./images/icon-list.svg" alt="Checkmark icon">And much more!</li>
       </ul>
 
-      <!-- Sign-up form start -->
+      <!-- Sign-up form -->
       <form id="newsletter-form">
-        <input type="email" id="email" placeholder="email@company.com" required />
+        <label for="email">Email address</label>
+        <input 
+          type="email" 
+          id="email" 
+          placeholder="email@company.com" 
+          aria-describedby="email-error"
+          required 
+        />
+        <div id="email-error" class="error-message hidden">Valid email required</div>
         <button type="submit">Subscribe to monthly newsletter</button>
       </form>
-      <!-- Sign-up form end -->
 
-      <!-- Success message start -->
+      <!-- Success message-->
       <div id="success-message" class="hidden">
-        <img src="icon-success.svg" alt="Check" class="check-icon" />
+        <img src="./images/icon-success.svg" alt="Success checkmark" class="check-icon" />
         <h2>Thanks for subscribing!</h2>
-        <p>A confirmation email has been sent to <span id="user-email"></span>. Please open it and click the button inside to confirm your subscription.</p>
+        <p>A confirmation email has been sent to <strong id="user-email"></strong>. 
+           Please open it and click the button inside to confirm your subscription.</p>
         <button onclick="dismissMessage()">Dismiss message</button>
       </div>
-       <!-- Success message end -->
     </div>
 
     <div class="image-container">
-      <img id="desktop-image" src="illustration-sign-up-desktop.svg" alt="Analytics" />
-      <img id="mobile-image" src="illustration-sign-up-mobile.svg" alt="Analytics Mobile" />
+      <img id="desktop-image" src="./images/illustration-sign-up-desktop.svg" alt="Newsletter illustration" />
+      <img id="mobile-image" src="./images/illustration-sign-up-mobile.svg" alt="Newsletter illustration" />
     </div>
   </section>
   
-  <div class="attribution">
+  <footer class="attribution">
     Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
-    Coded by <a href="#">Orapeleng Madibela</a>.
-  </div>
+    Coded by <a href="#">Your Name</a>.
+  </footer>
+
 
   <script src="script.js"></script>
 </body>
