@@ -6,9 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const emailError = document.getElementById("email-error")
   const successMessage = document.getElementById("success-message")
   const userEmailSpan = document.getElementById("user-email")
-
-  // Debug log to verify script is running
-  console.log("Newsletter script initialized")
+  const submitButton = document.getElementById("submit-button")
 
   // Email validation function
   function isValidEmail(email) {
@@ -20,17 +18,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // Form submission handler
   form.addEventListener("submit", async (e) => {
     e.preventDefault() // Prevent default form submission
-    console.log("Form submitted")
 
     const email = emailInput.value.trim()
-    console.log("Email entered:", email)
 
     // Client-side validation
     if (!isValidEmail(email)) {
       // Show error state
       emailInput.classList.add("error")
       emailError.classList.remove("hidden")
-      console.log("Email validation failed")
       return
     }
 
@@ -39,37 +34,22 @@ document.addEventListener("DOMContentLoaded", () => {
     emailError.classList.add("hidden")
 
     // Show loading state
-    const submitButton = form.querySelector("button[type='submit']")
     const originalButtonText = submitButton.textContent
     submitButton.disabled = true
-    submitButton.textContent = "Subscribing..."
+    submitButton.innerHTML = "Subscribing... <span class='spinner'></span>"
 
     try {
-      console.log("Sending request to server...")
-
-      // Send data to server - try both paths in case of configuration issues
-      let response
-      try {
-        response = await fetch("/api/subscribe", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        })
-      } catch (fetchError) {
-        console.log("First fetch attempt failed, trying alternative path")
-        // Try alternative path if first one fails
-        response = await fetch("/subscribe", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        })
-      }
+      // Send data to Netlify function
+      const response = await fetch("/.netlify/functions/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      })
 
       const data = await response.json()
-      console.log("Server response:", data)
 
       if (response.ok) {
-        // Show success message
+        // Show success message and hide form
         form.style.display = "none"
         userEmailSpan.innerText = email
         successMessage.classList.remove("hidden")
@@ -78,18 +58,14 @@ document.addEventListener("DOMContentLoaded", () => {
         alert(data.message || "Something went wrong. Please try again.")
       }
     } catch (error) {
-      // Handle network errors
       console.error("Error:", error)
 
-      // Fallback for testing - show success anyway if server is not available
-      // Remove this in production!
-      console.log("Using fallback success for testing")
+      // For Netlify deployment without functions configured yet
+      // This allows testing the UI before setting up functions
+      // Remove this in production if you have functions set up
       form.style.display = "none"
       userEmailSpan.innerText = email
       successMessage.classList.remove("hidden")
-
-      // Uncomment this in production
-      // alert("Network error. Please check your connection and try again.")
     } finally {
       // Reset button state
       submitButton.disabled = false
