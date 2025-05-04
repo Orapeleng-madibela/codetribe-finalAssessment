@@ -4,10 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
-  
-  <!-- CSS Stylesheet -->
   <link rel="stylesheet" href="./css/styles.css">
   
   <title>Newsletter Sign-up Form with Success Message</title>
@@ -15,6 +12,7 @@
 <body>
   
   <section class="container">
+    <!-- Form section -->
     <div class="form-container">
       <h1>Stay updated!</h1>
       <p>Join 60,000+ product managers receiving monthly updates on:</p>
@@ -26,7 +24,10 @@
 
       <!-- Sign-up form -->
       <form id="newsletter-form">
-        <label for="email">Email address</label>
+        <div class="form-row">
+          <label for="email">Email address</label>
+          <span id="email-error" class="error-message hidden">Valid email required</span>
+        </div>
         <input 
           type="email" 
           id="email" 
@@ -34,11 +35,10 @@
           aria-describedby="email-error"
           required 
         />
-        <div id="email-error" class="error-message hidden">Valid email required</div>
-        <button type="submit">Subscribe to monthly newsletter</button>
+        <button type="submit" id="submit-button">Subscribe to monthly newsletter</button>
       </form>
 
-      <!-- Success message-->
+      <!-- Success message (hidden by default) -->
       <div id="success-message" class="hidden">
         <img src="./images/icon-success.svg" alt="Success checkmark" class="check-icon" />
         <h2>Thanks for subscribing!</h2>
@@ -48,18 +48,18 @@
       </div>
     </div>
 
+    <!-- Image section -->
     <div class="image-container">
       <img id="desktop-image" src="./images/illustration-sign-up-desktop.svg" alt="Newsletter illustration" />
       <img id="mobile-image" src="./images/illustration-sign-up-mobile.svg" alt="Newsletter illustration" />
     </div>
   </section>
   
+  <!-- Attribution -->
   <footer class="attribution">
     Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
-    Coded by <a href="#">Your Name</a>.
+    Coded by <a href="#container">Orapeleng Madibela</a>.
   </footer>
-
-
   <script src="script.js"></script>
 </body>
 </html>
