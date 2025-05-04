@@ -1,45 +1,52 @@
 // Wait for the DOM to be fully loaded before executing code
 document.addEventListener("DOMContentLoaded", () => {
-  // Get references to DOM elements
-  const form = document.getElementById("newsletter-form")
+  // ===== GET DOM ELEMENTS =====
+  // Form elements
+  const formView = document.getElementById("form-view")
+  const newsletterForm = document.getElementById("newsletter-form")
   const emailInput = document.getElementById("email")
   const emailError = document.getElementById("email-error")
-  const successMessage = document.getElementById("success-message")
-  const userEmailSpan = document.getElementById("user-email")
   const submitButton = document.getElementById("submit-button")
 
-  // Email validation function
+  // Success message elements
+  const successView = document.getElementById("success-view")
+  const userEmailSpan = document.getElementById("user-email")
+  const dismissButton = document.getElementById("dismiss-button")
+
+  // ===== EMAIL VALIDATION =====
   function isValidEmail(email) {
     // Basic email validation regex
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return emailRegex.test(email)
   }
 
-  // Form submission handler
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault() // Prevent default form submission
+  // ===== FORM SUBMISSION =====
+  newsletterForm.addEventListener("submit", async (event) => {
+    // Prevent the default form submission
+    event.preventDefault()
 
+    // Get the email value and trim whitespace
     const email = emailInput.value.trim()
 
-    // Client-side validation
+    // Validate the email
     if (!isValidEmail(email)) {
-      // Show error state
+      // Show error state if email is invalid
       emailInput.classList.add("error")
       emailError.classList.remove("hidden")
       return
     }
 
-    // Reset error state if validation passes
+    // Clear any previous error state
     emailInput.classList.remove("error")
     emailError.classList.add("hidden")
 
-    // Show loading state
+    // Show loading state on the button
     const originalButtonText = submitButton.textContent
     submitButton.disabled = true
     submitButton.innerHTML = "Subscribing... <span class='spinner'></span>"
 
     try {
-      // Send data to Netlify function
+      // Send data to the server
       const response = await fetch("/.netlify/functions/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -49,47 +56,53 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json()
 
       if (response.ok) {
-        // Show success message and hide form
-        form.style.display = "none"
-        userEmailSpan.innerText = email
-        successMessage.classList.remove("hidden")
+        // Show success message if the request was successful
+        showSuccessMessage(email)
       } else {
-        // Show server error
+        // Show error message if the server returned an error
         alert(data.message || "Something went wrong. Please try again.")
       }
     } catch (error) {
       console.error("Error:", error)
 
-      // For Netlify deployment without functions configured yet
-      // This allows testing the UI before setting up functions
-      // Remove this in production if you have functions set up
-      form.style.display = "none"
-      userEmailSpan.innerText = email
-      successMessage.classList.remove("hidden")
+      // For testing or if the server is not available
+      // In production, you might want to show an error message instead
+      showSuccessMessage(email)
     } finally {
-      // Reset button state
+      // Reset the button state
       submitButton.disabled = false
       submitButton.textContent = originalButtonText
     }
   })
 
-  // Reset form when input is focused
+  // ===== SHOW SUCCESS MESSAGE =====
+  function showSuccessMessage(email) {
+    // Hide the form view
+    formView.classList.add("hidden")
+
+    // Set the user's email in the success message
+    userEmailSpan.textContent = email
+
+    // Show the success view
+    successView.classList.remove("hidden")
+  }
+
+  // ===== DISMISS SUCCESS MESSAGE =====
+  dismissButton.addEventListener("click", () => {
+    // Hide the success view
+    successView.classList.add("hidden")
+
+    // Show the form view
+    formView.classList.remove("hidden")
+
+    // Reset the form
+    emailInput.value = ""
+  })
+
+  // ===== RESET ERROR ON FOCUS =====
   emailInput.addEventListener("focus", () => {
+    // Clear error state when the user focuses on the input
     emailInput.classList.remove("error")
     emailError.classList.add("hidden")
   })
 })
-
-// Function to dismiss success message and reset form
-function dismissMessage() {
-  const form = document.getElementById("newsletter-form")
-  const emailInput = document.getElementById("email")
-  const successMessage = document.getElementById("success-message")
-
-  // Hide success message
-  successMessage.classList.add("hidden")
-
-  // Show and reset form
-  form.style.display = "flex"
-  emailInput.value = ""
-}
