@@ -2,16 +2,15 @@
 document.addEventListener("DOMContentLoaded", () => {
   // ===== GET DOM ELEMENTS =====
   // Form elements
-  const formView = document.getElementById("form-view")
   const newsletterForm = document.getElementById("newsletter-form")
+  const formContainer = document.querySelector(".form-container")
   const emailInput = document.getElementById("email")
   const emailError = document.getElementById("email-error")
   const submitButton = document.getElementById("submit-button")
 
   // Success message elements
-  const successView = document.getElementById("success-view")
+  const successMessage = document.getElementById("success-message")
   const userEmailSpan = document.getElementById("user-email")
-  const dismissButton = document.getElementById("dismiss-button")
 
   // ===== EMAIL VALIDATION =====
   function isValidEmail(email) {
@@ -46,8 +45,8 @@ document.addEventListener("DOMContentLoaded", () => {
     submitButton.innerHTML = "Subscribing... <span class='spinner'></span>"
 
     try {
-      // Send data to the server
-      const response = await fetch("/.netlify/functions/subscribe", {
+      // Send data to the server - using the correct endpoint from server.js
+      const response = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -77,27 +76,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ===== SHOW SUCCESS MESSAGE =====
   function showSuccessMessage(email) {
-    // Hide the form view
-    formView.classList.add("hidden")
+    // Hide the form
+    newsletterForm.classList.add("hidden")
+
+    // Hide all other elements in the form container except success message
+    Array.from(formContainer.children).forEach((child) => {
+      if (child !== successMessage) {
+        child.classList.add("hidden")
+      }
+    })
 
     // Set the user's email in the success message
     userEmailSpan.textContent = email
 
-    // Show the success view
-    successView.classList.remove("hidden")
+    // Show the success message
+    successMessage.classList.remove("hidden")
   }
 
   // ===== DISMISS SUCCESS MESSAGE =====
-  dismissButton.addEventListener("click", () => {
-    // Hide the success view
-    successView.classList.add("hidden")
+  // Implement the dismissMessage function referenced in the HTML
+  window.dismissMessage = () => {
+    // Hide the success message
+    successMessage.classList.add("hidden")
 
-    // Show the form view
-    formView.classList.remove("hidden")
+    // Show the form and other elements again
+    newsletterForm.classList.remove("hidden")
+    Array.from(formContainer.children).forEach((child) => {
+      if (child !== successMessage) {
+        child.classList.remove("hidden")
+      }
+    })
 
     // Reset the form
     emailInput.value = ""
-  })
+  }
 
   // ===== RESET ERROR ON FOCUS =====
   emailInput.addEventListener("focus", () => {
